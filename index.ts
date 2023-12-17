@@ -1,12 +1,16 @@
 require("dotenv").config();
+import { Application } from "express";
+
 const express = require("express");
 const sequelize = require("./db");
 
-const PORT = process.env.PORT || 5000;
+require("dotenv").config();
 
-const app = express();
+const PORT: number = Number(process.env.PORT) || 5000;
 
-const start = async () => {
+const app: Application = express();
+
+const start = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
@@ -15,5 +19,4 @@ const start = async () => {
     console.log(error);
   }
 };
-
 start();

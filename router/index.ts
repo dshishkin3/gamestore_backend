@@ -5,7 +5,7 @@ const Router = require("express").Router;
 const router = new Router();
 
 import UserController from "../controllers/user-controller";
-import { LoginRequestBody, RegistrationRequestBody } from "./types";
+import { LoginRequestBody, RegistrationRequestBody } from "../models/types";
 
 // GET
 // get hits
@@ -19,12 +19,10 @@ import { LoginRequestBody, RegistrationRequestBody } from "./types";
 // get basket user
 
 // POST
-// login
-// register
-// logout
 // change info user
 // add to fav
 // add to basket
+// logout (+ clear cookies)
 router.post(
   "/registration",
   body("number").isLength({ min: 11, max: 12 }),

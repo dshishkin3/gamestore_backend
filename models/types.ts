@@ -1,11 +1,11 @@
 // Types
 export type RegistrationRequestBody = {
-  number: number;
+  number: string;
   password: string;
   username: string;
 };
 
 export type LoginRequestBody = {
-  number: number;
+  number: string;
   password: string;
 };

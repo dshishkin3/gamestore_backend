@@ -3,14 +3,16 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../models/user-model");
 
 import UserDto from "../dtos/user-dto";
-import ApiError from "../exceptions/api-error";
+import tokenService from "./token-service";
+
+const ApiError = require("../exceptions/api-error");
 
 class UserService {
   async registration(
-    number: number,
+    number: string,
     password: string,
     username: string
-  ): Promise<UserDto> {
+  ): Promise<any> {
     const candidate = await UserModel.findOne({ number });
     if (candidate) {
       throw ApiError.BadRequest(
@@ -28,10 +30,11 @@ class UserService {
     });
 
     const userDto = new UserDto(user);
-    return userDto;
+    const tokens = tokenService.generateTokens({ ...userDto });
+    return { ...tokens, user: userDto };
   }
 
-  async login(number: number, password: string): Promise<UserDto> {
+  async login(number: string, password: string): Promise<UserDto> {
     try {
       const user = await UserModel.findOne({ number });
       if (!user) {

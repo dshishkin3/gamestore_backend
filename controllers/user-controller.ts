@@ -2,26 +2,16 @@ import { Request, Response, NextFunction } from "express";
 
 const { validationResult } = require("express-validator");
 
-import ApiError from "../exceptions/api-error";
+const ApiError = require("../exceptions/api-error");
 import userService from "../service/user-service";
-
-interface RegistrationRequestBody {
-  number: number;
-  password: string;
-  username: string;
-}
-
-interface LoginRequestBody {
-  number: number;
-  password: string;
-}
+import { LoginRequestBody, RegistrationRequestBody } from "../models/types";
 
 class UserController {
   async registration(
     req: Request<{}, {}, RegistrationRequestBody>,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
+  ): Promise<any> {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -34,6 +24,10 @@ class UserController {
         password,
         username
       );
+      res.cookie("refreshToken", userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
       res.json(userData);
     } catch (e) {
       next(e);
@@ -44,15 +38,21 @@ class UserController {
     req: Request<{}, {}, LoginRequestBody>,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
+  ): Promise<any> {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return next(ApiError.BadRequest("Validation error", errors.array()));
+        return res
+          .status(400)
+          .json({ error: "Проверьте корректность введенных данных!" });
       }
 
       const { number, password } = req.body;
       const userData = await userService.login(number, password);
+      res.cookie("refreshToken", userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
       res.json(userData);
     } catch (e) {
       next(e);

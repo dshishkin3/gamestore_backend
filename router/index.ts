@@ -10,15 +10,18 @@ import { LoginRequestBody, RegistrationRequestBody } from "../models/types";
 
 // GET
 // get hits
-router.get((req: Request, res: Response) => {
+router.get("/hits", (req: Request, res: Response) => {
     ProductsController.getHits(req, res);
-})
+});
 // get discounts
 // get categories
 // get subcategories
 // get subcategories items [FILTER]
 // get search items
 // get product
+router.get("/products", (req: Request, res: Response) => {
+    ProductsController.getProducts(req, res);
+});
 // get favorites user
 // get basket user
 

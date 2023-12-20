@@ -13,6 +13,15 @@ class ProductsService {
         }
         return hits;
     }
+    async getProducts() {
+        const products: ProductTypes[] = await ProductModel.find();
+        if (!products) {
+            throw ApiError.BadRequest(
+                'products не найдены!'
+            )
+        }
+        return products;
+    }
 }
 
 export default new ProductsService();

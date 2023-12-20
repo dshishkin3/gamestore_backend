@@ -6,6 +6,11 @@ class ProductsController {
         const hits = await productsService.getHits();
         res.json(hits);
     }
+
+    async getProducts(req: Request, res: Response) {
+        const products = await productsService.getProducts();
+        res.json(products);
+    }
 }
 
 export default new ProductsController();

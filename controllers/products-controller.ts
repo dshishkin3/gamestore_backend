@@ -1,5 +1,8 @@
+import { NextFunction, Request, Response } from "express";
+const { validationResult } = require("express-validator");
+const ApiError = require("../exceptions/api-error");
+
 import productsService from "../service/products-service";
-import { Request, Response } from "express";
 
 class ProductsController {
     async getHits(req: Request, res: Response) {
@@ -13,13 +16,11 @@ class ProductsController {
     }
 
     async getProductById(req: Request, res: Response) {
-
         const product = await productsService.getProductById(req.params.id);
         res.json(product);
     }
 
     async getSearchItem(req: Request, res: Response) {
-
         const product = await productsService.getSearchItem(req.params.title);
         res.json(product);
     }
@@ -45,16 +46,26 @@ class ProductsController {
     }
 
     async removeProductFromFavorites(req: Request, res: Response) {
-        const { id } = req.body
+        const { id } = req.body;
         const favorites = await productsService.removeProductFromFavorites(req.params.userId, id);
 
         res.json(favorites);
     }
     async removeProductFromBasket(req: Request, res: Response) {
-        const { id } = req.body
+        const { id } = req.body;
         const basket = await productsService.removeProductFromBasket(req.params.userId, id);
 
         res.json(basket);
+    }
+
+    async getProductsBySubcategory(req: Request, res: Response, next: NextFunction) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return next(ApiError.BadRequest("Validation error", errors.array()));
+        }
+
+        const products = await productsService.getProductsBySubcategory(req.query.subcategory as string);
+        res.json(products);
     }
 }
 

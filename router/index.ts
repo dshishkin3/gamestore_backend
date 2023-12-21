@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { body } from "express-validator";
+import { body, param, query } from "express-validator";
 
 const Router = require("express").Router;
 const router = new Router();
@@ -34,6 +34,14 @@ router.get("/favorites/:userId", (req: Request, res: Response) => {
 router.get("/basket/:userId", (req: Request, res: Response) => {
   ProductsController.getBasket(req, res);
 });
+
+router.get(
+  "/getProductsBySubcategory",
+  query("subcategory").isString(),
+  (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getProductsBySubcategory(req, res, next);
+  }
+);
 
 // get discounts
 // get subcategories

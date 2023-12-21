@@ -23,7 +23,7 @@ router.get("/search/:title", (req: Request, res: Response) => {
   ProductsController.getSearchItem(req, res);
 });
 
-router.get("/products/:id", (req: Request, res: Response) => {
+router.get("/product/:id", (req: Request, res: Response) => {
   ProductsController.getProductById(req, res);
 });
 
@@ -41,14 +41,14 @@ router.get("/basket/:userId", (req: Request, res: Response) => {
 
 // POST
 router.post(
-  "/basket/:userId",
+  "/addToBasket/:userId",
   authMiddleware,
   (req: Request, res: Response) => {
     ProductsController.addProductToBasket(req, res);
   }
 );
 
-router.post("/favorites/:userId", (req: Request, res: Response) => {
+router.post("/addToFavorites/:userId", (req: Request, res: Response) => {
   ProductsController.addProductToFavorites(req, res);
 });
 // change info user
@@ -84,11 +84,11 @@ router.post("/logout", UserController.logout);
 // change info user
 
 // DELETE
-router.delete("/basket/:userId", (req: Request, res: Response) => {
+router.delete("/deleteFromBasket/:userId", (req: Request, res: Response) => {
   ProductsController.removeProductFromBasket(req, res);
 });
 
-router.delete("/favorites/:userId", (req: Request, res: Response) => {
+router.delete("/deleteFromFavorites/:userId", (req: Request, res: Response) => {
   ProductsController.removeProductFromFavorites(req, res);
 });
 module.exports = router;

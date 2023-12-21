@@ -9,23 +9,43 @@ import ProductsController from "../controllers/products-controller";
 import { LoginRequestBody, RegistrationRequestBody } from "../models/types";
 
 // GET
-// get hits
-router.get((req: Request, res: Response) => {
+router.get("/hits", (req: Request, res: Response) => {
     ProductsController.getHits(req, res);
-})
+});
+
+router.get("/categories", (req: Request, res: Response) => {
+    ProductsController.getCategories(req, res);
+});
+
+router.get("/search/:title", (req: Request, res: Response) => {
+    ProductsController.getSearchItem(req, res);
+});
+
+router.get("/products/:id", (req: Request, res: Response) => {
+    ProductsController.getProductById(req, res);
+});
+
+router.get("/favorites/:userId", (req: Request, res: Response) => {
+    ProductsController.getFavorites(req, res);
+});
+
+router.get("/basket/:userId", (req: Request, res: Response) => {
+    ProductsController.getBasket(req, res);
+});
+
 // get discounts
-// get categories
 // get subcategories
 // get subcategories items [FILTER]
-// get search items
-// get product
-// get favorites user
-// get basket user
 
 // POST
+router.post("/basket/:userId", (req: Request, res: Response) => {
+    ProductsController.addProductToBasket(req, res);
+});
+
+router.post("/favorites/:userId", (req: Request, res: Response) => {
+    ProductsController.addProductToFavorites(req, res);
+});
 // change info user
-// add to fav
-// add to basket
 // logout (+ clear cookies)
 router.post(
     "/registration",
@@ -57,5 +77,11 @@ router.post(
 // change info user
 
 // DELETE
+router.delete("/basket/:userId", (req: Request, res: Response) => {
+    ProductsController.removeProductFromBasket(req, res);
+});
 
+router.delete("/favorites/:userId", (req: Request, res: Response) => {
+    ProductsController.removeProductFromFavorites(req, res);
+});
 module.exports = router;

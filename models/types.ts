@@ -1,4 +1,7 @@
 // Types
+
+import { ObjectId } from "mongoose";
+
 export type RegistrationRequestBody = {
     number: string;
     password: string;
@@ -11,6 +14,7 @@ export type LoginRequestBody = {
 };
 
 export type ProductTypes = {
+    id: string,
     title: string;
     desc: string;
     characteristic: string;

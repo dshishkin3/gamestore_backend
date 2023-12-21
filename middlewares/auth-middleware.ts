@@ -1,7 +1,8 @@
+import { Request, Response, NextFunction } from "express";
+import tokenService from "../service/token-service";
 const ApiError = require("../exceptions/api-error");
-const tokenService = require("../service/token-service");
 
-module.exports = function (req, res, next) {
+module.exports = function (req: any, res: Response, next: NextFunction): void {
   try {
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
@@ -13,7 +14,10 @@ module.exports = function (req, res, next) {
       return next(ApiError.UnauthorizedError());
     }
 
+    console.log("czxczx");
+
     const userData = tokenService.validateAccessToken(accessToken);
+    console.log("czxczx");
     if (!userData) {
       return next(ApiError.UnauthorizedError());
     }

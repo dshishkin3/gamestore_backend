@@ -24,6 +24,8 @@ class TokenService {
   }
 
   validateAccessToken(token: string) {
+    console.log("token:", token);
+
     try {
       const userData = jwt.verify(
         token,

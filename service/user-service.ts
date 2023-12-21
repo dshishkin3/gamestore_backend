@@ -31,10 +31,11 @@ class UserService {
 
     const userDto = new UserDto(user);
     const tokens = tokenService.generateTokens({ ...userDto });
+    await tokenService.saveToken(userDto.id, tokens.refreshToken);
     return { ...tokens, user: userDto };
   }
 
-  async login(number: string, password: string): Promise<UserDto> {
+  async login(number: string, password: string): Promise<any> {
     try {
       const user = await UserModel.findOne({ number });
       if (!user) {
@@ -47,10 +48,20 @@ class UserService {
       }
 
       const userDto = new UserDto(user);
-      return userDto;
+
+      const tokens = tokenService.generateTokens({ ...userDto });
+
+      await tokenService.saveToken(userDto.id, tokens.refreshToken);
+      
+      return {...tokens, user: userDto};
     } catch (error) {
       throw ApiError.BadRequest("Ошибка при входе пользователя");
     }
+  }
+
+  async logout(refreshToken: string) {
+    const token = await tokenService.removeToken(refreshToken);
+    return token;
   }
 }
 

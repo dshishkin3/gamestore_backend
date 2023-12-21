@@ -12,35 +12,41 @@ const authMiddleware = require("../middlewares/auth-middleware");
 
 // GET
 router.get("/hits", (req: Request, res: Response) => {
-  ProductsController.getHits(req, res);
+    ProductsController.getHits(req, res);
 });
 
 router.get("/categories", (req: Request, res: Response) => {
-  ProductsController.getCategories(req, res);
+    ProductsController.getCategories(req, res);
 });
 
 router.get("/search/:title", (req: Request, res: Response) => {
-  ProductsController.getSearchItem(req, res);
+    ProductsController.getSearchItem(req, res);
 });
 
 router.get("/product/:id", (req: Request, res: Response) => {
-  ProductsController.getProductById(req, res);
+    ProductsController.getProductById(req, res);
 });
 
 router.get("/favorites/:userId", (req: Request, res: Response) => {
-  ProductsController.getFavorites(req, res);
+    ProductsController.getFavorites(req, res);
 });
 
 router.get("/basket/:userId", (req: Request, res: Response) => {
-  ProductsController.getBasket(req, res);
+    ProductsController.getBasket(req, res);
 });
 
 router.get(
-  "/getProductsBySubcategory",
-  query("subcategory").isString(),
-  (req: Request, res: Response, next: NextFunction) => {
-    ProductsController.getProductsBySubcategory(req, res, next);
-  }
+    "/getProductsBySubcategory",
+    query("subcategory").isString(),
+    query("sort").optional().isIn(["popular", "price_asc", "price_desc"]),
+    query("minPrice").optional().isNumeric(),
+    query("maxPrice").optional().isNumeric(),
+    query("discount").optional().isBoolean(),
+    query("hit").optional().isBoolean(),
+    query("inStock").optional().isBoolean(),
+    (req: Request, res: Response, next: NextFunction) => {
+        ProductsController.getProductsBySubcategory(req, res, next);
+    },
 );
 
 // get discounts
@@ -48,43 +54,31 @@ router.get(
 // get subcategories items [FILTER]
 
 // POST
-router.post(
-  "/addToBasket/:userId",
-  authMiddleware,
-  (req: Request, res: Response) => {
+router.post("/addToBasket/:userId", authMiddleware, (req: Request, res: Response) => {
     ProductsController.addProductToBasket(req, res);
-  }
-);
+});
 
 router.post("/addToFavorites/:userId", (req: Request, res: Response) => {
-  ProductsController.addProductToFavorites(req, res);
+    ProductsController.addProductToFavorites(req, res);
 });
 // change info user
 // logout (+ clear cookies)
 router.post(
-  "/registration",
-  body("number").isLength({ min: 11, max: 12 }),
-  body("password").isLength({ min: 3, max: 32 }),
-  body("username").isLength({ min: 3, max: 32 }),
-  (
-    req: Request<{}, {}, RegistrationRequestBody>,
-    res: Response,
-    next: NextFunction
-  ) => {
-    UserController.registration(req, res, next);
-  }
+    "/registration",
+    body("number").isLength({ min: 11, max: 12 }),
+    body("password").isLength({ min: 3, max: 32 }),
+    body("username").isLength({ min: 3, max: 32 }),
+    (req: Request<{}, {}, RegistrationRequestBody>, res: Response, next: NextFunction) => {
+        UserController.registration(req, res, next);
+    },
 );
 router.post(
-  "/login",
-  body("number").isLength({ min: 11, max: 12 }),
-  body("password").isLength({ min: 3, max: 32 }),
-  (
-    req: Request<{}, {}, LoginRequestBody>,
-    res: Response,
-    next: NextFunction
-  ) => {
-    UserController.login(req, res, next);
-  }
+    "/login",
+    body("number").isLength({ min: 11, max: 12 }),
+    body("password").isLength({ min: 3, max: 32 }),
+    (req: Request<{}, {}, LoginRequestBody>, res: Response, next: NextFunction) => {
+        UserController.login(req, res, next);
+    },
 );
 router.post("/logout", UserController.logout);
 
@@ -93,10 +87,10 @@ router.post("/logout", UserController.logout);
 
 // DELETE
 router.delete("/deleteFromBasket/:userId", (req: Request, res: Response) => {
-  ProductsController.removeProductFromBasket(req, res);
+    ProductsController.removeProductFromBasket(req, res);
 });
 
 router.delete("/deleteFromFavorites/:userId", (req: Request, res: Response) => {
-  ProductsController.removeProductFromFavorites(req, res);
+    ProductsController.removeProductFromFavorites(req, res);
 });
 module.exports = router;

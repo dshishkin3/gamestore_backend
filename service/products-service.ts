@@ -1,4 +1,4 @@
-import { ProductTypes } from "../models/types";
+import { ProductType } from "../models/types";
 
 const ProductModel = require("../models/product-model");
 const CategoryModel = require("../models/categories-model");
@@ -6,9 +6,9 @@ const UserModel = require("../models/user-model");
 const ApiError = require("../exceptions/api-error");
 
 class ProductsService {
-    async getHits(): Promise<ProductTypes[]> {
+    async getHits(): Promise<ProductType[]> {
         try {
-            const hits: ProductTypes[] = await ProductModel.find({
+            const hits: ProductType[] = await ProductModel.find({
                 hit: { $ne: false },
             });
             if (!hits) {
@@ -22,7 +22,7 @@ class ProductsService {
 
     async getCategories() {
         try {
-            const categories: ProductTypes[] = await CategoryModel.find();
+            const categories: ProductType[] = await CategoryModel.find();
             if (!categories) {
                 throw ApiError.BadRequest("categories не найдены!");
             }
@@ -37,7 +37,7 @@ class ProductsService {
             if (!id) {
                 throw ApiError.BadRequest("id не найдены!");
             }
-            const product: ProductTypes = await ProductModel.findById(id);
+            const product: ProductType = await ProductModel.findById(id);
             if (!product) {
                 throw ApiError.BadRequest("product не найдены!");
             }
@@ -50,7 +50,7 @@ class ProductsService {
     async getSearchItem(title: string) {
         try {
             const regex = new RegExp(title, "i");
-            const searchItem: ProductTypes = await ProductModel.find({
+            const searchItem: ProductType = await ProductModel.find({
                 title: regex,
             });
             return searchItem;
@@ -85,7 +85,7 @@ class ProductsService {
         }
     }
 
-    async addProductToBasket(userId: string, product: ProductTypes) {
+    async addProductToBasket(userId: string, product: ProductType) {
         try {
             const user = await UserModel.findById(userId);
             if (!user) {
@@ -100,7 +100,7 @@ class ProductsService {
         }
     }
 
-    async addProductToFavorites(userId: string, product: ProductTypes) {
+    async addProductToFavorites(userId: string, product: ProductType) {
         try {
             const user = await UserModel.findById(userId);
             if (!user) {
@@ -122,7 +122,7 @@ class ProductsService {
             if (!user) {
                 throw ApiError.NotFound("Пользователь не найден");
             }
-            const favorites = user.favorites.filter((favorite: ProductTypes) => favorite.id !== productId);
+            const favorites = user.favorites.filter((favorite: ProductType) => favorite.id !== productId);
             user.favorites = [...favorites];
             await user.save();
 
@@ -138,7 +138,7 @@ class ProductsService {
             if (!user) {
                 throw ApiError.NotFound("Пользователь не найден");
             }
-            const basket = user.basket.filter((item: ProductTypes) => item.id !== productId);
+            const basket = user.basket.filter((item: ProductType) => item.id !== productId);
             user.basket = [...basket];
             await user.save();
 
@@ -148,9 +148,38 @@ class ProductsService {
         }
     }
 
-    async getProductsBySubcategory(subcategory: string) {
-        console.log(subcategory);
-        const products = await ProductModel.find({ category: subcategory });
+    async getProductsBySubcategory(
+        subcategory: string,
+        sort?: string,
+        minPrice?: number,
+        maxPrice?: number,
+        discount?: boolean,
+        hit?: boolean,
+        inStock?: boolean,
+    ) {
+        console.log(subcategory, sort, minPrice, discount);
+        let query: any = { category: subcategory };
+
+        if (minPrice !== undefined || maxPrice !== undefined) {
+            query.price = {};
+            if (minPrice !== undefined) query.price.$gte = minPrice;
+            if (maxPrice !== undefined) query.price.$lte = maxPrice;
+        }
+
+        if (discount !== undefined) query.discount = discount;
+        if (hit !== undefined) query.hit = hit;
+        if (inStock !== undefined) query.inStock = inStock;
+
+        let products = await ProductModel.find(query);
+
+        if (sort === "popular") {
+            products = products.sort((a: ProductType, b: ProductType) => (a.hit === b.hit ? 0 : a.hit ? -1 : 1));
+        } else if (sort === "price_asc") {
+            products = products.sort((a: ProductType, b: ProductType) => a.price - b.price);
+        } else if (sort === "price_desc") {
+            products = products.sort((a: ProductType, b: ProductType) => b.price - a.price);
+        }
+
         return products;
     }
 }

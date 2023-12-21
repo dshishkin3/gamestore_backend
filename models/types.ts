@@ -13,8 +13,8 @@ export type LoginRequestBody = {
     password: string;
 };
 
-export type ProductTypes = {
-    id: string,
+export type ProductType = {
+    id: string;
     title: string;
     desc: string;
     characteristic: string;
@@ -22,6 +22,7 @@ export type ProductTypes = {
     price: number;
     oldPrice: number;
     hit: boolean;
-    promotion: boolean;
+    discount: boolean;
+    inStock: boolean;
     urlImages: string[];
-}
+};

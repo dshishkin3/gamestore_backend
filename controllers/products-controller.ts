@@ -64,7 +64,23 @@ class ProductsController {
             return next(ApiError.BadRequest("Validation error", errors.array()));
         }
 
-        const products = await productsService.getProductsBySubcategory(req.query.subcategory as string);
+        const subcategory = req.query.subcategory as string;
+        const sort = req.query.sort as string | undefined;
+        const minPrice = parseFloat(req.query.minPrice as string) || undefined;
+        const maxPrice = parseFloat(req.query.maxPrice as string) || undefined;
+        const discount = req.query.discount === "true" ? true : undefined;
+        const hit = req.query.hit === "true" ? true : undefined;
+        const inStock = req.query.inStock === "true" ? true : undefined;
+
+        const products = await productsService.getProductsBySubcategory(
+            subcategory,
+            sort,
+            minPrice,
+            maxPrice,
+            discount,
+            hit,
+            inStock,
+        );
         res.json(products);
     }
 }

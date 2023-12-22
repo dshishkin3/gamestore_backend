@@ -20,6 +20,16 @@ class ProductsService {
         }
     }
 
+    async getDiscounts() {
+        const discounts: ProductType[] = await ProductModel.find({
+            discounts: { $ne: false },
+        });
+        if (!discounts) {
+            throw ApiError.BadRequest("discounts не найдены!");
+        }
+        return discounts;
+    }
+
     async getCategories() {
         try {
             const categories: ProductType[] = await CategoryModel.find();

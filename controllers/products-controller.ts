@@ -10,6 +10,12 @@ class ProductsController {
         res.json(hits);
     }
 
+    async getDiscounts(req: Request, res: Response, next: NextFunction) {
+        const products = await productsService.getDiscounts();
+
+        res.json(products);
+    }
+
     async getCategories(req: Request, res: Response) {
         const products = await productsService.getCategories();
         res.json(products);

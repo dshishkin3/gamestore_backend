@@ -19,6 +19,7 @@ router.get(
     }
 );
 
+
 router.get(
     "/categories",
     (
@@ -27,6 +28,12 @@ router.get(
         ProductsController.getCategories(req, res);
     }
 );
+
+router.get("/discounts", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getDiscounts(req, res, next);
+});
+
+
 
 router.get(
     "/search/:title",

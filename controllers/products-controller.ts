@@ -13,7 +13,13 @@ class ProductsController {
         } catch (error) {
             throw ApiError.ServerError("Ошибка сервера");
         }
+       }
 
+    async getDiscounts(req: Request, res: Response, next: NextFunction) {
+        const products = await productsService.getDiscounts();
+
+        res.json(products);
+    }
     }
 
     async getCategories(

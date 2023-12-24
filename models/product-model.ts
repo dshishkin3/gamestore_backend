@@ -8,8 +8,10 @@ const ProductSchema = new Schema({
     price: { type: Number, required: true },
     oldPrice: { type: Number },
     hit: { type: Boolean, required: true },
-    promotion: { type: Boolean, required: true },
-    urlImages: { type: Array, required: true }
+    inStock: { type: Boolean, required: true },
+    discount: { type: Boolean, required: true },
+    urlImages: { type: Array, required: true },
+    reviews: { type: Array, required: true },
 });
 
 module.exports = model("Product", ProductSchema);

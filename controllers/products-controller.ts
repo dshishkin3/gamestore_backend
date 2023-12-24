@@ -2,11 +2,10 @@ import { NextFunction, Request, Response } from "express";
 const { validationResult } = require("express-validator");
 const ApiError = require("../exceptions/api-error");
 import productsService from "../service/products-service";
+import reviewsService from "../service/reviews-service";
 
 class ProductsController {
-    async getHits(
-        req: Request, res: Response
-    ) {
+    async getHits(req: Request, res: Response) {
         try {
             const hits = await productsService.getHits();
             res.json(hits);
@@ -21,10 +20,7 @@ class ProductsController {
         res.json(products);
     }
 
-
-    async getCategories(
-        req: Request, res: Response
-    ) {
+    async getCategories(req: Request, res: Response) {
         try {
             const products = await productsService.getCategories();
             res.json(products);
@@ -33,21 +29,16 @@ class ProductsController {
         }
     }
 
-    async getProductById(
-        req: Request, res: Response
-    ) {
+    async getProductById(req: Request, res: Response) {
         try {
             const product = await productsService.getProductById(req.params.id);
             res.json(product);
         } catch (error) {
             throw ApiError.ServerError("Ошибка сервера");
         }
-
     }
 
-    async getSearchItem(
-        req: Request, res: Response
-    ) {
+    async getSearchItem(req: Request, res: Response) {
         try {
             const product = await productsService.getSearchItem(req.params.title);
             res.json(product);
@@ -56,9 +47,7 @@ class ProductsController {
         }
     }
 
-    async getFavorites(
-        req: Request, res: Response
-    ) {
+    async getFavorites(req: Request, res: Response) {
         try {
             const favorites = await productsService.getFavorites(req.params.userId);
             res.json(favorites);
@@ -67,9 +56,7 @@ class ProductsController {
         }
     }
 
-    async getBasket(
-        req: Request, res: Response
-    ) {
+    async getBasket(req: Request, res: Response) {
         try {
             const basket = await productsService.getBasket(req.params.userId);
             res.json(basket);
@@ -78,9 +65,7 @@ class ProductsController {
         }
     }
 
-    async addProductToBasket(
-        req: any, res: Response, next: NextFunction
-    ) {
+    async addProductToBasket(req: any, res: Response, next: NextFunction) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -93,9 +78,7 @@ class ProductsController {
         }
     }
 
-    async addProductToFavorites(
-        req: any, res: Response, next: NextFunction
-    ) {
+    async addProductToFavorites(req: any, res: Response, next: NextFunction) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -108,9 +91,7 @@ class ProductsController {
         }
     }
 
-    async removeProductFromFavorites(
-        req: any, res: Response, next: NextFunction
-    ) {
+    async removeProductFromFavorites(req: any, res: Response, next: NextFunction) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -125,9 +106,7 @@ class ProductsController {
         }
     }
 
-    async removeProductFromBasket(
-        req: any, res: Response, next: NextFunction
-    ) {
+    async removeProductFromBasket(req: any, res: Response, next: NextFunction) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -141,9 +120,7 @@ class ProductsController {
         }
     }
 
-    async getProductsBySubcategory(
-        req: Request, res: Response, next: NextFunction
-    ) {
+    async getProductsBySubcategory(req: Request, res: Response, next: NextFunction) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -169,6 +146,14 @@ class ProductsController {
             );
             res.json(products);
         } catch (error) {
+            throw ApiError.ServerError("Ошибка сервера");
+        }
+    }
+    async getScoreProduct(req: any, res: Response, next: NextFunction) {
+        try {
+            const score = await reviewsService.getScoreProduct(req.params.id);
+            res.json(score);
+        } catch (e) {
             throw ApiError.ServerError("Ошибка сервера");
         }
     }

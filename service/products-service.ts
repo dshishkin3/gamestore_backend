@@ -7,17 +7,13 @@ const ApiError = require("../exceptions/api-error");
 
 class ProductsService {
     async getHits(): Promise<ProductType[]> {
-        try {
-            const hits: ProductType[] = await ProductModel.find({
-                hit: { $ne: false },
-            });
-            if (!hits) {
-                throw ApiError.BadRequest("hits не найдены!");
-            }
-            return hits;
-        } catch (error) {
-            throw ApiError.BadRequest("categories не найдены!");
+        const hits: ProductType[] = await ProductModel.find({
+            hit: { $ne: false },
+        });
+        if (!hits) {
+            throw ApiError.BadRequest("hits не найдены!");
         }
+        return hits;
     }
 
     async getDiscounts() {
@@ -31,131 +27,105 @@ class ProductsService {
     }
 
     async getCategories() {
-        try {
-            const categories: ProductType[] = await CategoryModel.find();
-            if (!categories) {
-                throw ApiError.BadRequest("categories не найдены!");
-            }
-            return categories;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        const categories: ProductType[] = await CategoryModel.find();
+        if (!categories) {
+            throw ApiError.BadRequest("categories не найдены!");
         }
+        return categories;
     }
 
-    async getProductById(id: string) {
-        try {
-            if (!id) {
-                throw ApiError.BadRequest("id не найдены!");
-            }
-            const product: ProductType = await ProductModel.findById(id);
-            if (!product) {
-                throw ApiError.BadRequest("product не найдены!");
-            }
-            return product;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+    async getProductById(
+        id: string
+    ) {
+        if (!id) {
+            throw ApiError.BadRequest("id не найдены!");
         }
+        const product: ProductType = await ProductModel.findById(id);
+        if (!product) {
+            throw ApiError.BadRequest("product не найдены!");
+        }
+        return product;
     }
 
-    async getSearchItem(title: string) {
-        try {
-            const regex = new RegExp(title, "i");
-            const searchItem: ProductType = await ProductModel.find({
-                title: regex,
-            });
-            return searchItem;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+    async getSearchItem(
+        title: string
+    ) {
+        if (!title) {
+            throw ApiError.BadRequest('title не найдены!')
         }
+        const regex = new RegExp(title, "i");
+        const searchItem: ProductType = await ProductModel.find({
+            title: regex,
+        });
+        return searchItem;
     }
 
-    async getFavorites(userId: string) {
-        try {
-            const user = await UserModel.findById(userId);
-            if (!user) {
-                throw ApiError.NotFound("Пользователь не найден");
-            }
-
-            return user.favorites;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+    async getFavorites(
+        userId: string
+    ) {
+        if (!userId) {
+            throw ApiError.BadRequest("userId не найдены!")
         }
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            throw ApiError.NotFound("Пользователь не найден");
+        }
+        return user.favorites;
     }
 
-    async getBasket(userId: string) {
-        try {
-            const user = await UserModel.findById(userId);
-            if (!user) {
-                throw ApiError.NotFound("Пользователь не найден");
-            }
-
-            return user.basket;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+    async getBasket(
+        userId: string
+    ) {
+        if (!userId) {
+            throw ApiError.BadRequest("userId не найдены!")
         }
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            throw ApiError.NotFound("Пользователь не найден");
+        }
+        return user.basket;
     }
 
-    async addProductToBasket(userId: string, product: ProductType) {
-        try {
-            const user = await UserModel.findById(userId);
-            if (!user) {
-                throw ApiError.NotFound("Пользователь не найден");
-            }
-            user.basket.push(product);
-            await user.save();
+    async addProductToBasket(
+        userId: string, product: ProductType
+    ) {
+        const user = await UserModel.findById(userId);
+        user.basket.push(product);
+        await user.save();
 
-            return user.basket;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
-        }
+        return user.basket;
     }
 
-    async addProductToFavorites(userId: string, product: ProductType) {
-        try {
-            const user = await UserModel.findById(userId);
-            if (!user) {
-                throw ApiError.NotFound("Пользователь не найден");
-            }
-            user.favorites.push(product);
-            await user.save();
+    async addProductToFavorites(
+        userId: string, product: ProductType
+    ) {
+        const user = await UserModel.findById(userId);
+        user.favorites.push(product);
+        await user.save();
 
-            return user.favorites;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
-        }
+        return user.favorites;
     }
 
-    async removeProductFromFavorites(userId: string, productId: string) {
-        try {
-            console.log(productId);
-            const user = await UserModel.findById(userId);
-            if (!user) {
-                throw ApiError.NotFound("Пользователь не найден");
-            }
-            const favorites = user.favorites.filter((favorite: ProductType) => favorite.id !== productId);
-            user.favorites = [...favorites];
-            await user.save();
+    async removeProductFromFavorites(
+        userId: string, productId: string
+    ) {
+        const user = await UserModel.findById(userId);
+        const favorites = user.favorites.filter((favorite: ProductType) => favorite.id !== productId);
+        user.favorites = [...favorites];
+        await user.save();
 
-            return user.favorites;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
-        }
+        return user.favorites;
     }
 
-    async removeProductFromBasket(userId: string, productId: string) {
-        try {
-            const user = await UserModel.findById(userId);
-            if (!user) {
-                throw ApiError.NotFound("Пользователь не найден");
-            }
-            const basket = user.basket.filter((item: ProductType) => item.id !== productId);
-            user.basket = [...basket];
-            await user.save();
+    async removeProductFromBasket(
+        userId: string, productId: string
+    ) {
+        const user = await UserModel.findById(userId);
+        const basket = user.basket.filter((item: ProductType) => item.id !== productId);
+        user.basket = [...basket];
+        await user.save();
 
-            return user.basket;
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
-        }
+        return user.basket;
     }
 
     async getProductsBySubcategory(
@@ -167,7 +137,6 @@ class ProductsService {
         hit?: boolean,
         inStock?: boolean,
     ) {
-        console.log(subcategory, sort, minPrice, discount);
         let query: any = { category: subcategory };
 
         if (minPrice !== undefined || maxPrice !== undefined) {

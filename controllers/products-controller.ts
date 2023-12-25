@@ -5,63 +5,67 @@ import productsService from "../service/products-service";
 import reviewsService from "../service/reviews-service";
 
 class ProductsController {
-    async getHits(req: Request, res: Response) {
+    async getHits(req: Request, res: Response, next: NextFunction) {
         try {
             const hits = await productsService.getHits();
             res.json(hits);
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
     async getDiscounts(req: Request, res: Response, next: NextFunction) {
-        const products = await productsService.getDiscounts();
+        try {
+            const products = await productsService.getDiscounts();
+            res.json(products);
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
+        }
 
-        res.json(products);
     }
 
-    async getCategories(req: Request, res: Response) {
+    async getCategories(req: Request, res: Response, next: NextFunction) {
         try {
             const products = await productsService.getCategories();
             res.json(products);
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
-    async getProductById(req: Request, res: Response) {
+    async getProductById(req: Request, res: Response, next: NextFunction) {
         try {
             const product = await productsService.getProductById(req.params.id);
             res.json(product);
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
-    async getSearchItem(req: Request, res: Response) {
+    async getSearchItem(req: Request, res: Response, next: NextFunction) {
         try {
             const product = await productsService.getSearchItem(req.params.title);
             res.json(product);
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
-    async getFavorites(req: Request, res: Response) {
+    async getFavorites(req: Request, res: Response, next: NextFunction) {
         try {
             const favorites = await productsService.getFavorites(req.params.userId);
             res.json(favorites);
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
-    async getBasket(req: Request, res: Response) {
+    async getBasket(req: Request, res: Response, next: NextFunction) {
         try {
             const basket = await productsService.getBasket(req.params.userId);
             res.json(basket);
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
@@ -74,7 +78,7 @@ class ProductsController {
             const basket = await productsService.addProductToBasket(req.user.id, req.body);
             res.json(basket);
         } catch (e) {
-            throw ApiError.ServerError("Ошибка сервера");
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
@@ -87,7 +91,7 @@ class ProductsController {
             const favorites = await productsService.addProductToFavorites(req.user.id, req.body);
             res.json(favorites);
         } catch (e) {
-            throw ApiError.ServerError("Ошибка сервера");
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
@@ -102,7 +106,7 @@ class ProductsController {
 
             res.json(favorites);
         } catch (e) {
-            throw ApiError.ServerError("Ошибка сервера");
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
@@ -116,7 +120,7 @@ class ProductsController {
             const basket = await productsService.removeProductFromBasket(req.user.id, id);
             res.json(basket);
         } catch (e) {
-            throw ApiError.ServerError("Ошибка сервера");
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 
@@ -145,8 +149,8 @@ class ProductsController {
                 inStock,
             );
             res.json(products);
-        } catch (error) {
-            throw ApiError.ServerError("Ошибка сервера");
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
     async getScoreProduct(req: any, res: Response, next: NextFunction) {
@@ -154,7 +158,7 @@ class ProductsController {
             const score = await reviewsService.getScoreProduct(req.params.id);
             res.json(score);
         } catch (e) {
-            throw ApiError.ServerError("Ошибка сервера");
+            next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
 }

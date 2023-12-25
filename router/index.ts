@@ -11,32 +11,32 @@ const router = new Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
 // GET
-router.get("/hits", (req: Request, res: Response) => {
-    ProductsController.getHits(req, res);
+router.get("/hits", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getHits(req, res, next);
 });
 
-router.get("/categories", (req: Request, res: Response) => {
-    ProductsController.getCategories(req, res);
+router.get("/categories", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getCategories(req, res, next);
 });
 
 router.get("/discounts", (req: Request, res: Response, next: NextFunction) => {
     ProductsController.getDiscounts(req, res, next);
 });
 
-router.get("/search/:title", (req: Request, res: Response) => {
-    ProductsController.getSearchItem(req, res);
+router.get("/search/:title", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getSearchItem(req, res, next);
 });
 
-router.get("/product/:id", (req: Request, res: Response) => {
-    ProductsController.getProductById(req, res);
+router.get("/product/:id", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getProductById(req, res, next);
 });
 
-router.get("/favorites/:userId", (req: Request, res: Response) => {
-    ProductsController.getFavorites(req, res);
+router.get("/favorites/:userId", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getFavorites(req, res, next);
 });
 
-router.get("/basket/:userId", (req: Request, res: Response) => {
-    ProductsController.getBasket(req, res);
+router.get("/basket/:userId", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getBasket(req, res, next);
 });
 
 router.get(

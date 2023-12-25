@@ -63,9 +63,6 @@ class ProductsService {
     async getFavorites(
         userId: string
     ) {
-        if (!userId) {
-            throw ApiError.BadRequest("userId не найдены!")
-        }
         const user = await UserModel.findById(userId);
         if (!user) {
             throw ApiError.NotFound("Пользователь не найден");
@@ -76,9 +73,6 @@ class ProductsService {
     async getBasket(
         userId: string
     ) {
-        if (!userId) {
-            throw ApiError.BadRequest("userId не найдены!")
-        }
         const user = await UserModel.findById(userId);
         if (!user) {
             throw ApiError.NotFound("Пользователь не найден");
@@ -90,6 +84,9 @@ class ProductsService {
         userId: string, product: ProductType
     ) {
         const user = await UserModel.findById(userId);
+        if (!user) {
+            throw ApiError.BadRequest("Пользователь не найден")
+        }
         user.basket.push(product);
         await user.save();
 
@@ -100,6 +97,9 @@ class ProductsService {
         userId: string, product: ProductType
     ) {
         const user = await UserModel.findById(userId);
+        if (!user) {
+            throw ApiError.BadRequest("Пользователь не найден")
+        }
         user.favorites.push(product);
         await user.save();
 
@@ -109,7 +109,13 @@ class ProductsService {
     async removeProductFromFavorites(
         userId: string, productId: string
     ) {
+        if (!productId) {
+            throw ApiError.BadRequest("productId не найден")
+        }
         const user = await UserModel.findById(userId);
+        if (!user) {
+            throw ApiError.BadRequest("Пользователь не найден")
+        }
         const favorites = user.favorites.filter((favorite: ProductType) => favorite.id !== productId);
         user.favorites = [...favorites];
         await user.save();
@@ -120,7 +126,13 @@ class ProductsService {
     async removeProductFromBasket(
         userId: string, productId: string
     ) {
+        if (!productId) {
+            throw ApiError.BadRequest("productId не найден")
+        }
         const user = await UserModel.findById(userId);
+        if (!user) {
+            throw ApiError.BadRequest("Пользователь не найден")
+        }
         const basket = user.basket.filter((item: ProductType) => item.id !== productId);
         user.basket = [...basket];
         await user.save();

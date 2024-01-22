@@ -1,4 +1,4 @@
-import { ProductType } from "../models/types";
+import { CategoryType, ProductType } from "../models/types";
 
 const ProductModel = require("../models/product-model");
 const CategoryModel = require("../models/categories-model");
@@ -27,11 +27,25 @@ class ProductsService {
     }
 
     async getCategories() {
-        const categories: ProductType[] = await CategoryModel.find();
+        const categories:CategoryType[] = await CategoryModel.find();
         if (!categories) {
             throw ApiError.BadRequest("categories не найдены!");
         }
         return categories;
+    }
+
+    async getCategoryByTitle(
+        title:string
+    ){
+        console.log(title)
+        if(!title){
+              throw ApiError.BadRequest("title не найдены!");
+        }
+        const category:CategoryType = await CategoryModel.findOne({originTitle:title});
+        if(!category){
+             throw ApiError.BadRequest(`товар с таким ${title} title не найдены!`);
+        }
+        return category;
     }
 
     async getProductById(

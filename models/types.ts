@@ -28,6 +28,20 @@ export type ProductType = {
     urlImages: string[];
 };
 
+export type Subcategories={
+    id:string,
+    title:string,
+    origenTitle:string,
+    urlImg:string,
+}
+
+export type CategoryType={
+    _id:string,
+    title:string,
+    origenTitle:string,
+    urlImg:string,
+    subcategories:Subcategories[]
+}
 export type ReviewTypeBody = {
     id: string;
     userId: string;

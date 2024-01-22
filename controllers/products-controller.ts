@@ -32,7 +32,15 @@ class ProductsController {
             next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
-
+    async getCategoryByTitle(req:Request,res:Response,next:NextFunction){
+        try {
+            console.log(req.params.title)
+            const category=await productsService.getCategoryByTitle(req.params.title);
+            res.json(category);
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e))
+        }
+    }
     async getProductById(req: Request, res: Response, next: NextFunction) {
         try {
             const product = await productsService.getProductById(req.params.id);

@@ -19,8 +19,8 @@ router.get("/categories", (req: Request, res: Response, next: NextFunction) => {
     ProductsController.getCategories(req, res, next);
 });
 
-router.get("/category/:title",(req:Request,res:Response,next:NextFunction)=>{
-    ProductsController.getCategoryByTitle(req,res,next);
+router.get("/category/:title", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getCategoryByTitle(req, res, next);
 });
 
 router.get("/discounts", (req: Request, res: Response, next: NextFunction) => {
@@ -44,8 +44,7 @@ router.get("/basket/:userId", (req: Request, res: Response, next: NextFunction) 
 });
 
 router.get(
-    "/getProductsBySubcategory",
-    query("subcategory").isString(),
+    "/getProductsBySubcategory/:subcategory",
     query("sort").optional().isIn(["popular", "price_asc", "price_desc"]),
     query("minPrice").optional().isNumeric(),
     query("maxPrice").optional().isNumeric(),

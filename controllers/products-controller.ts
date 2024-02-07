@@ -32,10 +32,10 @@ class ProductsController {
             next(ApiError.ServerError("Ошибка сервера", e))
         }
     }
-    async getCategoryByTitle(req:Request,res:Response,next:NextFunction){
+    async getCategoryByTitle(req: Request, res: Response, next: NextFunction) {
         try {
             console.log(req.params.title)
-            const category=await productsService.getCategoryByTitle(req.params.title);
+            const category = await productsService.getCategoryByTitle(req.params.title);
             res.json(category);
         } catch (e) {
             next(ApiError.ServerError("Ошибка сервера", e))
@@ -139,7 +139,7 @@ class ProductsController {
                 return next(ApiError.BadRequest("Validation error", errors.array()));
             }
 
-            const subcategory = req.query.subcategory as string;
+            const subcategory = req.params.subcategory as string;
             const sort = req.query.sort as string | undefined;
             const minPrice = parseFloat(req.query.minPrice as string) || undefined;
             const maxPrice = parseFloat(req.query.maxPrice as string) || undefined;

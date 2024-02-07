@@ -44,7 +44,8 @@ router.get("/basket/:userId", (req: Request, res: Response, next: NextFunction) 
 });
 
 router.get(
-    "/getProductsBySubcategory/:subcategory",
+    "/getProductsBySubcategory/",
+    query("subcategory").isString(),
     query("sort").optional().isIn(["popular", "price_asc", "price_desc"]),
     query("minPrice").optional().isNumeric(),
     query("maxPrice").optional().isNumeric(),

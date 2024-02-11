@@ -27,7 +27,7 @@ class ProductsService {
     }
 
     async getCategories() {
-        const categories:CategoryType[] = await CategoryModel.find();
+        const categories: CategoryType[] = await CategoryModel.find();
         if (!categories) {
             throw ApiError.BadRequest("categories не найдены!");
         }
@@ -35,15 +35,15 @@ class ProductsService {
     }
 
     async getCategoryByTitle(
-        title:string
-    ){
+        title: string
+    ) {
         console.log(title)
-        if(!title){
-              throw ApiError.BadRequest("title не найдены!");
+        if (!title) {
+            throw ApiError.BadRequest("title не найдены!");
         }
-        const category:CategoryType = await CategoryModel.findOne({originTitle:title});
-        if(!category){
-             throw ApiError.BadRequest(`товар с таким ${title} title не найдены!`);
+        const category: CategoryType = await CategoryModel.findOne({ originTitle: title });
+        if (!category) {
+            throw ApiError.BadRequest(`товар с таким ${title} title не найдены!`);
         }
         return category;
     }
@@ -185,7 +185,7 @@ class ProductsService {
             products = products.sort((a: ProductType, b: ProductType) => b.price - a.price);
         }
 
-        return products;
+        return { title: subcategory, subcategories: products };
     }
 }
 

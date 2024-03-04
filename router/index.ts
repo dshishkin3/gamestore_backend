@@ -64,16 +64,6 @@ router.get("/getScoreProduct/:id", ProductsController.getScoreProduct);
 router.post(
     "/addToBasket",
     body("id").isString(),
-    body("title").isString(),
-    body("desc").isString(),
-    body("characteristic").isString(),
-    body("category").isString(),
-    body("price").isInt(),
-    body("oldPrice").isInt(),
-    body("hit").isBoolean(),
-    body("discount").isBoolean(),
-    body("inStock").isBoolean(),
-    body("urlImages").isArray(),
     authMiddleware,
     (req: Request, res: Response, next: NextFunction) => {
         ProductsController.addProductToBasket(req, res, next);
@@ -83,16 +73,6 @@ router.post(
 router.post(
     "/addToFavorites",
     body("id").isString(),
-    body("title").isString(),
-    body("desc").isString(),
-    body("characteristic").isString(),
-    body("category").isString(),
-    body("price").isInt(),
-    body("oldPrice").isInt(),
-    body("hit").isBoolean(),
-    body("discount").isBoolean(),
-    body("inStock").isBoolean(),
-    body("urlImages").isArray(),
     authMiddleware,
     (req: Request, res: Response, next: NextFunction) => {
         ProductsController.addProductToFavorites(req, res, next);

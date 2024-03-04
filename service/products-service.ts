@@ -81,7 +81,13 @@ class ProductsService {
         if (!user) {
             throw ApiError.NotFound("Пользователь не найден");
         }
-        return user.favorites;
+
+        if (!user.favorites.isLength) {
+            return [];
+        }
+
+        const favorites = await ProductModel.find({ _id: { $in: user.favorites } })
+        return favorites;
     }
 
     async getBasket(
@@ -91,30 +97,36 @@ class ProductsService {
         if (!user) {
             throw ApiError.NotFound("Пользователь не найден");
         }
-        return user.basket;
+
+        if (!user.basket.isLength) {
+            return [];
+        }
+
+        const basket = await ProductModel.find({ _id: { $in: user.basket } })
+        return basket;
     }
 
     async addProductToBasket(
-        userId: string, product: ProductType
+        userId: string, productId: ProductType
     ) {
         const user = await UserModel.findById(userId);
         if (!user) {
             throw ApiError.BadRequest("Пользователь не найден")
         }
-        user.basket.push(product);
+        user.basket.push(productId);
         await user.save();
 
         return user.basket;
     }
 
     async addProductToFavorites(
-        userId: string, product: ProductType
+        userId: string, productId: ProductType
     ) {
         const user = await UserModel.findById(userId);
         if (!user) {
             throw ApiError.BadRequest("Пользователь не найден")
         }
-        user.favorites.push(product);
+        user.favorites.push(productId);
         await user.save();
 
         return user.favorites;

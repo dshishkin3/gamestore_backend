@@ -34,10 +34,8 @@ class ProductsService {
         return categories;
     }
 
-    async getCategoryByTitle(
-        title: string
-    ) {
-        console.log(title)
+    async getCategoryByTitle(title: string) {
+        console.log(title);
         if (!title) {
             throw ApiError.BadRequest("title не найдены!");
         }
@@ -48,9 +46,7 @@ class ProductsService {
         return category;
     }
 
-    async getProductById(
-        id: string
-    ) {
+    async getProductById(id: string) {
         if (!id) {
             throw ApiError.BadRequest("id не найдены!");
         }
@@ -61,11 +57,9 @@ class ProductsService {
         return product;
     }
 
-    async getSearchItem(
-        title: string
-    ) {
+    async getSearchItem(title: string) {
         if (!title) {
-            throw ApiError.BadRequest('title не найдены!')
+            throw ApiError.BadRequest("title не найдены!");
         }
         const regex = new RegExp(title, "i");
         const searchItem: ProductType = await ProductModel.find({
@@ -74,9 +68,7 @@ class ProductsService {
         return searchItem;
     }
 
-    async getFavorites(
-        userId: string
-    ) {
+    async getFavorites(userId: string) {
         const user = await UserModel.findById(userId);
         if (!user) {
             throw ApiError.NotFound("Пользователь не найден");
@@ -86,13 +78,11 @@ class ProductsService {
             return [];
         }
 
-        const favorites = await ProductModel.find({ _id: { $in: user.favorites } })
+        const favorites = await ProductModel.find({ _id: { $in: user.favorites } });
         return favorites;
     }
 
-    async getBasket(
-        userId: string
-    ) {
+    async getBasket(userId: string) {
         const user = await UserModel.findById(userId);
         if (!user) {
             throw ApiError.NotFound("Пользователь не найден");
@@ -102,16 +92,14 @@ class ProductsService {
             return [];
         }
 
-        const basket = await ProductModel.find({ _id: { $in: user.basket } })
+        const basket = await ProductModel.find({ _id: { $in: user.basket } });
         return basket;
     }
 
-    async addProductToBasket(
-        userId: string, productId: ProductType
-    ) {
+    async addProductToBasket(userId: string, productId: ProductType) {
         const user = await UserModel.findById(userId);
         if (!user) {
-            throw ApiError.BadRequest("Пользователь не найден")
+            throw ApiError.BadRequest("Пользователь не найден");
         }
         user.basket.push(productId);
         await user.save();
@@ -119,12 +107,10 @@ class ProductsService {
         return user.basket;
     }
 
-    async addProductToFavorites(
-        userId: string, productId: ProductType
-    ) {
+    async addProductToFavorites(userId: string, productId: ProductType) {
         const user = await UserModel.findById(userId);
         if (!user) {
-            throw ApiError.BadRequest("Пользователь не найден")
+            throw ApiError.BadRequest("Пользователь не найден");
         }
         user.favorites.push(productId);
         await user.save();
@@ -132,15 +118,13 @@ class ProductsService {
         return user.favorites;
     }
 
-    async removeProductFromFavorites(
-        userId: string, productId: string
-    ) {
+    async removeProductFromFavorites(userId: string, productId: string) {
         if (!productId) {
-            throw ApiError.BadRequest("productId не найден")
+            throw ApiError.BadRequest("productId не найден");
         }
         const user = await UserModel.findById(userId);
         if (!user) {
-            throw ApiError.BadRequest("Пользователь не найден")
+            throw ApiError.BadRequest("Пользователь не найден");
         }
         const favorites = user.favorites.filter((favorite: ProductType) => favorite.id !== productId);
         user.favorites = [...favorites];
@@ -149,15 +133,13 @@ class ProductsService {
         return user.favorites;
     }
 
-    async removeProductFromBasket(
-        userId: string, productId: string
-    ) {
+    async removeProductFromBasket(userId: string, productId: string) {
         if (!productId) {
-            throw ApiError.BadRequest("productId не найден")
+            throw ApiError.BadRequest("productId не найден");
         }
         const user = await UserModel.findById(userId);
         if (!user) {
-            throw ApiError.BadRequest("Пользователь не найден")
+            throw ApiError.BadRequest("Пользователь не найден");
         }
         const basket = user.basket.filter((item: ProductType) => item.id !== productId);
         user.basket = [...basket];
@@ -198,6 +180,22 @@ class ProductsService {
         }
 
         return { title: subcategory, subcategories: products };
+    }
+
+    async getProductsByIds(ids: string[]) {
+        if (!ids || ids.length === 0) {
+            throw new ApiError.BadRequest("Массив идентификаторов не должен быть пустым");
+        }
+
+        const products = await ProductModel.find({
+            _id: { $in: ids },
+        }).exec();
+
+        if (!products || products.length === 0) {
+            throw ApiError.NotFound("Продукты не найдены");
+        }
+
+        return products;
     }
 }
 

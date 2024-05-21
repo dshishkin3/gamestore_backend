@@ -43,6 +43,10 @@ router.get("/basket/:userId", (req: Request, res: Response, next: NextFunction) 
     ProductsController.getBasket(req, res, next);
 });
 
+router.get("/getProductsByIds", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getProductsByIds(req, res, next);
+});
+
 router.get(
     "/getProductsBySubcategory/",
     query("subcategory").isString(),

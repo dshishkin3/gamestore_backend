@@ -43,10 +43,6 @@ router.get("/basket/:userId", (req: Request, res: Response, next: NextFunction) 
     ProductsController.getBasket(req, res, next);
 });
 
-router.get("/getProductsByIds", (req: Request, res: Response, next: NextFunction) => {
-    ProductsController.getProductsByIds(req, res, next);
-});
-
 router.get(
     "/getProductsBySubcategory/",
     query("subcategory").isString(),
@@ -65,6 +61,11 @@ router.get("/getScoreProduct/:id", ProductsController.getScoreProduct);
 
 // get discounts
 // POST
+
+router.post("/getProductsByIds", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getProductsByIds(req, res, next);
+});
+
 router.post(
     "/addToBasket",
     body("id").isString(),

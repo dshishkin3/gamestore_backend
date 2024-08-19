@@ -214,6 +214,15 @@ class ProductsController {
             next(ApiError.ServerError("Ошибка сервера", e));
         }
     }
+
+    async getAllSubcategories(req: Request, res: Response, next: NextFunction) {
+        try {
+            const products = await productsService.getAllSubcategories();
+            res.json(products);
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e));
+        }
+    }
 }
 
 export default new ProductsController();

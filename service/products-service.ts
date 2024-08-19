@@ -266,6 +266,24 @@ class ProductsService {
 
         return updatedProduct;
     }
+
+    async getAllSubcategories(): Promise<string[]> {
+        // Извлекаем все категории с подкатегориями
+        const categories = await CategoryModel.find({}, "subcategories");
+
+        // Если категории не найдены, выбрасываем ошибку
+        if (!categories || categories.length === 0) {
+            throw ApiError.BadRequest("Категории не найдены!");
+        }
+
+        // Объединяем все подкатегории в один массив строк
+        const allSubcategories = categories.reduce((acc: string[], category: CategoryType) => {
+            const subcategoryTitles = category.subcategories.map((subcategory: any) => subcategory.title); // Извлекаем поле title
+            return acc.concat(subcategoryTitles);
+        }, []);
+
+        return allSubcategories;
+    }
 }
 
 export default new ProductsService();

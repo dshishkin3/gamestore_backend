@@ -5,6 +5,15 @@ import productsService from "../service/products-service";
 import reviewsService from "../service/reviews-service";
 
 class ProductsController {
+    async getAllProducts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const hits = await productsService.getAllProducts();
+            res.json(hits);
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e));
+        }
+    }
+
     async getHits(req: Request, res: Response, next: NextFunction) {
         try {
             const hits = await productsService.getHits();
@@ -173,6 +182,33 @@ class ProductsController {
     async getProductsByIds(req: Request, res: Response, next: NextFunction) {
         try {
             const products = await productsService.getProductsByIds(req.body);
+            res.json(products);
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e));
+        }
+    }
+
+    async addProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            const products = await productsService.addProduct(req.body);
+            res.json(products);
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e));
+        }
+    }
+
+    async deleteProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            const products = await productsService.deleteProduct(req.params.id);
+            res.json(products);
+        } catch (e) {
+            next(ApiError.ServerError("Ошибка сервера", e));
+        }
+    }
+
+    async editProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            const products = await productsService.editProduct(req.params.id, req.body);
             res.json(products);
         } catch (e) {
             next(ApiError.ServerError("Ошибка сервера", e));

@@ -11,6 +11,10 @@ const router = new Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
 // GET
+router.get("/allProducts", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.getAllProducts(req, res, next);
+});
+
 router.get("/hits", (req: Request, res: Response, next: NextFunction) => {
     ProductsController.getHits(req, res, next);
 });
@@ -61,6 +65,9 @@ router.get("/getScoreProduct/:id", ProductsController.getScoreProduct);
 
 // get discounts
 // POST
+router.post("/addProduct", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.addProduct(req, res, next);
+});
 
 router.post("/getProductsByIds", (req: Request, res: Response, next: NextFunction) => {
     ProductsController.getProductsByIds(req, res, next);
@@ -126,7 +133,13 @@ router.put(
     UserController.updateUser,
 );
 
+router.put("/editProduct/:id", ProductsController.editProduct);
+
 // DELETE
+router.delete("/deleteProduct/:id", (req: Request, res: Response, next: NextFunction) => {
+    ProductsController.deleteProduct(req, res, next);
+});
+
 router.delete(
     "/deleteFromBasket",
     body("id").isString(),

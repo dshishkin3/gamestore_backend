@@ -6,6 +6,14 @@ const UserModel = require("../models/user-model");
 const ApiError = require("../exceptions/api-error");
 
 class ProductsService {
+    async getAllProducts(): Promise<ProductType[]> {
+        const products: ProductType[] = await ProductModel.find();
+        if (!products) {
+            throw ApiError.BadRequest("products не найдены!");
+        }
+        return products;
+    }
+
     async getHits(): Promise<ProductType[]> {
         const hits: ProductType[] = await ProductModel.find({
             hit: { $ne: false },
@@ -196,6 +204,67 @@ class ProductsService {
         }
 
         return products;
+    }
+
+    async addProduct(form: ProductType): Promise<ProductType> {
+        // Проверка на наличие необходимых полей
+        if (!form.title || !form.price || !form.category) {
+            throw ApiError.BadRequest("Отсутствуют необходимые данные для добавления продукта");
+        }
+
+        // Создание нового продукта
+        const newProduct = new ProductModel({
+            id: form.id,
+            title: form.title,
+            desc: form.desc,
+            characteristic: form.characteristic,
+            category: form.category,
+            price: form.price,
+            oldPrice: form.oldPrice,
+            hit: form.hit,
+            discount: form.discount,
+            inStock: form.inStock,
+            urlImages: form.urlImages,
+        });
+
+        // Сохранение продукта в базе данных
+        const savedProduct = await newProduct.save();
+
+        return savedProduct;
+    }
+
+    async deleteProduct(productId: string): Promise<{ message: string }> {
+        if (!productId) {
+            throw ApiError.BadRequest("productId не найден");
+        }
+
+        // Поиск и удаление продукта по ID
+        const deletedProduct = await ProductModel.findByIdAndDelete(productId);
+
+        if (!deletedProduct) {
+            throw ApiError.NotFound("Продукт не найден");
+        }
+
+        return { message: "Продукт успешно удалён" };
+    }
+
+    async editProduct(productId: string, updateData: Partial<ProductType>): Promise<ProductType> {
+        if (!productId) {
+            throw ApiError.BadRequest("productId не найден");
+        }
+
+        // Поиск продукта и обновление данных
+        const updatedProduct = await ProductModel.findByIdAndUpdate(
+            productId,
+            { $set: updateData }, // обновляем только те поля, которые переданы
+            { new: true, runValidators: true }, // возвращаем обновлённый документ
+        );
+
+        if (!updatedProduct) {
+            throw ApiError.NotFound("Продукт не найден");
+        }
+
+        return updatedProduct;
     }
 }
 

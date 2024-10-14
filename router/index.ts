@@ -1,4 +1,8 @@
 import { Request, Response, NextFunction } from "express";
+import fs from "fs";
+import path from "path";
+import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
 import { body, query } from "express-validator";
 import UserController from "../controllers/user-controller";
 import ProductsController from "../controllers/products-controller";
@@ -9,6 +13,43 @@ const Router = require("express").Router;
 const router = new Router();
 
 const authMiddleware = require("../middlewares/auth-middleware");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "files/");
+    },
+    filename: (req, file, cb) => {
+        const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
+        cb(null, uniqueName);
+    },
+});
+
+const upload = multer({ storage });
+
+// POST /api/upload
+router.post("/upload", upload.single("file"), (req: Request, res: Response) => {
+    console.log("req", req);
+
+    if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    res.json({ id: req.file.filename });
+});
+
+// GET /api/files/:id
+router.get("/files/:id", (req: Request, res: Response) => {
+    const fileId = req.params.id;
+    const filePath = path.join(__dirname, "..", "files", fileId);
+
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).json({ message: "File not found" });
+        }
+
+        res.sendFile(filePath);
+    });
+});
 
 // GET
 router.get("/allProducts", (req: Request, res: Response, next: NextFunction) => {
